@@ -1,10 +1,10 @@
 {
-  "name": "papa-node-hello-000",
+  "name": "surveyform",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -12,10 +12,14 @@
     "url": "git+https://github.com/johnpapa/node-hello.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "LM",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/johnpapa/node-hello/issues"
   },
-  "homepage": "https://github.com/johnpapa/node-hello#readme"
+  "homepage": "https://github.com/johnpapa/node-hello#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "googleapis": "^27.0.0"
+  }
 }
