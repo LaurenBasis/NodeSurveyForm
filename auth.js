@@ -2,8 +2,13 @@ const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
 
+  // Authorize using one of the following scopes:
+  //   'https://www.googleapis.com/auth/drive'
+  //   'https://www.googleapis.com/auth/drive.file'
+  //   'https://www.googleapis.com/auth/spreadsheets'
+
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -75,16 +80,16 @@ function getNewToken(oAuth2Client, callback) {
 function listMajors(auth) {
     const sheets = google.sheets({ version: 'v4', auth });
     sheets.spreadsheets.values.get({
-        spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-        range: 'Class Data!A2:E',
+        spreadsheetId: '1c1WrgmwEH0bK_rEZm3FFsMIewChgr0cfVw1uBgIQlp0',
+        range: 'Sheet4!A2:E',
     }, (err, res) => {
         if (err) return console.log('The API returned an error: ' + err);
         const rows = res.data.values;
         if (rows.length) {
             console.log('Name, Major:');
             // Print columns A and E, which correspond to indices 0 and 4.
-            rows.map((row) => {
-                console.log(`${row[0]}, ${row[4]}`);
+            rows.forEach(row => {
+                console.log(`${row[0]}, ${row[4]}`);                
             });
         } else {
             console.log('No data found.');
@@ -95,3 +100,5 @@ function listMajors(auth) {
 module.exports = {
     getcredentials: getcredentials
 }
+
+//getcredentials();

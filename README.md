@@ -7,3 +7,8 @@ Great for testing simple deployments to the cloud
 ## Run It
 
 `npm start`
+
+# go here
+
+http://localhost:3000/
+
