@@ -2,10 +2,10 @@ const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
 
-  // Authorize using one of the following scopes:
-  //   'https://www.googleapis.com/auth/drive'
-  //   'https://www.googleapis.com/auth/drive.file'
-  //   'https://www.googleapis.com/auth/spreadsheets'
+// Authorize using one of the following scopes:
+//   'https://www.googleapis.com/auth/drive'
+//   'https://www.googleapis.com/auth/drive.file'
+//   'https://www.googleapis.com/auth/spreadsheets'
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -14,12 +14,28 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 // time.
 const TOKEN_PATH = 'token.json';
 
-function getcredentials() {
+// function example1(func) {
+//     console.log('stuff');
+//     auth = magic;
+
+//     func(auth);
+// }
+
+// function after_example(auth) {
+//     auth.magic();
+//     console.log('stuff2');
+// }
+
+// example1(after_example);
+
+function getcredentials(FirstName, LastName) {
     // Load client secrets from a local file.
     fs.readFile('credentials.json', (err, content) => {
         if (err) return console.log('Error loading client secret file:', err);
         // Authorize a client with credentials, then call the Google Sheets API.
-        authorize(JSON.parse(content), listMajors);
+        authorize(JSON.parse(content), function(auth) {
+            listMajors(auth, FirstName, LastName);
+        });
     });
 }
 /**
@@ -77,20 +93,29 @@ function getNewToken(oAuth2Client, callback) {
  * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
-function listMajors(auth) {
+function listMajors(auth, FirstName, LastName) {
     const sheets = google.sheets({ version: 'v4', auth });
-    sheets.spreadsheets.values.get({
+    sheets.spreadsheets.values.update({
         spreadsheetId: '1c1WrgmwEH0bK_rEZm3FFsMIewChgr0cfVw1uBgIQlp0',
-        range: 'Sheet4!A2:E',
+        range: 'Sheet4!A1',
+        valueInputOption: 'USER_ENTERED',
+        resource: {
+            range: 'Sheet4!A1',
+            majorDimension: 'ROWS',
+            values: [[FirstName, LastName]]
+        }
     }, (err, res) => {
         if (err) return console.log('The API returned an error: ' + err);
         const rows = res.data.values;
-        if (rows.length) {
+        if (rows !== undefined && rows.length) {
             console.log('Name, Major:');
             // Print columns A and E, which correspond to indices 0 and 4.
             rows.forEach(row => {
-                console.log(`${row[0]}, ${row[4]}`);                
+                console.log(`${row[0]}, ${row[4]}`);
             });
+        } 
+        else if (res.status === 200) {
+            console.log('Data captured successfully.');
         } else {
             console.log('No data found.');
         }

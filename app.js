@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const router = express.Router();
 const auth = require('./auth');
+const bodyParser = require('body-parser');
 
 router.get('/',function(req,res){
   res.sendFile(path.join(__dirname+'/index.html'));
@@ -11,12 +12,17 @@ router.get('/',function(req,res){
 
 router.post('/',function(req,res){
     console.log(req.body);
-    auth.getcredentials();
+    auth.getcredentials(req.body.InputFirstName,req.body.InputLastName);
 });
 
 router.get('/results',function(req,res){
   res.sendFile(path.join(__dirname+'/results.html'));
 });
+
+//parse data from form
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json())
 
 //can access items from this folder
 app.use('/static', express.static(__dirname + '/Static'));
