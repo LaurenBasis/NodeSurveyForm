@@ -12,7 +12,7 @@ router.get('/',function(req,res){
 
 router.post('/',function(req,res){
     console.log(req.body);
-    auth.getcredentials(req.body.InputFirstName,req.body.InputLastName);
+    auth.getcredentials(req.body,res);
 });
 
 router.get('/results',function(req,res){

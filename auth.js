@@ -28,13 +28,13 @@ const TOKEN_PATH = 'token.json';
 
 // example1(after_example);
 
-function getcredentials(FirstName, LastName) {
+function getcredentials(body, res) {
     // Load client secrets from a local file.
     fs.readFile('credentials.json', (err, content) => {
         if (err) return console.log('Error loading client secret file:', err);
         // Authorize a client with credentials, then call the Google Sheets API.
         authorize(JSON.parse(content), function(auth) {
-            listMajors(auth, FirstName, LastName);
+            listMajors(auth, body, res);
         });
     });
 }
@@ -93,19 +93,31 @@ function getNewToken(oAuth2Client, callback) {
  * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
-function listMajors(auth, FirstName, LastName) {
+function listMajors(auth, body, response) {
     const sheets = google.sheets({ version: 'v4', auth });
-    sheets.spreadsheets.values.update({
+    //console.log(body.FirstName, body.LastName, body.idfromurl);
+    sheets.spreadsheets.values.append({
         spreadsheetId: '1c1WrgmwEH0bK_rEZm3FFsMIewChgr0cfVw1uBgIQlp0',
-        range: 'Sheet4!A1',
+        range: 'Sheet4',
         valueInputOption: 'USER_ENTERED',
         resource: {
-            range: 'Sheet4!A1',
-            majorDimension: 'ROWS',
-            values: [[FirstName, LastName]]
+            values: [[body.InputFirstName, body.InputLastName, body.idfromurl]]
         }
     }, (err, res) => {
-        if (err) return console.log('The API returned an error: ' + err);
+        if (err) {
+            response.writeHead(302, {
+                'Location': '/error'
+              });
+              response.end();
+            return console.log('The API returned an error: ' + err);
+        }
+        else {
+            response.writeHead(302, {
+                'Location': '/success'
+              });
+              response.end();
+        }
+
         const rows = res.data.values;
         if (rows !== undefined && rows.length) {
             console.log('Name, Major:');

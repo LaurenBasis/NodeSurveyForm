@@ -45,6 +45,7 @@ function runProcess(formObject) {
     }
     else {
         console.log('not calling google scripts')
+        formObject.submit();
         //google.script.run.withSuccessHandler(updateUrl).processForm(formObject);
     }
 }
